@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "full": {
+    "location_ota": "https://github.com/L-Batt/PixeneOS/releases/download/2026091001/blazer-2026091001-magisk-v31.0-cc7029f-dirty.zip",
+    "location_csig": "https://github.com/L-Batt/PixeneOS/releases/download/2026091001/blazer-2026091001-magisk-v31.0-cc7029f-dirty.zip.csig"
+  }
+}
