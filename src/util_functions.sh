@@ -369,14 +369,14 @@ function construct_url() {
 # This function is called by download_dependencies function when running in non-interactive mode
 function url_constructor() {
   local repository="${1}"
-  INTERACTIVE_MODE="${2:-true}"
+  local interactive_mode="${2:-true}"
 
   log "Constructing URL for \`${repository}\` as \`${repository}\` is non-existent at \`${WORKDIR}\`..."
   construct_url "${repository}"
   log "URL for \`${repository}\`: ${URL}"
 
   # If the script is running in interactive mode, prompt the user to overwrite the existing files
-  if [[ "${INTERACTIVE_MODE}" == 'true' ]]; then
+  if [[ "${interactive_mode}" == 'true' ]]; then
     if [[ -e "${WORKDIR}/tools/${repository}" || -e "${WORKDIR}/modules/${repository}.zip" || -e "${WORKDIR}/signatures/${repository}.zip.sig" ]]; then
       echo -n "Warning: \`${repository}\` already exists in \`${WORKDIR}\`\nOverwrite? (y/n) [default: yes]: "
       read -r confirm
@@ -399,10 +399,10 @@ function url_constructor() {
 # This calls the constructor that constructs the URL for the tools and modules
 function download_dependencies() {
   local tool="${1}"
-  INTERACTIVE_MODE='false'
+  local interactive_mode='false'
 
   if type url_constructor &>/dev/null; then
-    url_constructor "${tool}" "${INTERACTIVE_MODE}"
+    url_constructor "${tool}" "${interactive_mode}"
   else
     error "\`url_constructor\` function is not defined."
     exit 1
