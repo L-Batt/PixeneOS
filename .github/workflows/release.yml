@@ -57,6 +57,8 @@ env:
   DEVICE_NAME: ${{ inputs.device-id }}
   INTERACTIVE_MODE: false
   GRAPHENEOS_UPDATE_CHANNEL: ${{ inputs.update-channel }}
+  GITHUB_REPO: ${{ github.event.repository.name }}
+  GITHUB_USER: ${{ github.repository_owner }}
   RUST_BACKTRACE: short
   RUSTUP_MAX_RETRIES: 10
 
