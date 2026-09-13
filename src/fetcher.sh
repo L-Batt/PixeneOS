@@ -9,7 +9,11 @@ function get_latest_version() {
   local latest_grapheneos_version
   local latest_magisk_version
 
-  latest_grapheneos_version=$(curl -sL "${GRAPHENEOS[OTA_BASE_URL]}/${DEVICE_NAME}-${GRAPHENEOS[UPDATE_CHANNEL]}" | sed 's/ .*//')
+  if [[ -n "${GRAPHENEOS_VERSION:-}" ]]; then
+    latest_grapheneos_version="${GRAPHENEOS_VERSION}"
+  else
+    latest_grapheneos_version=$(curl -sL "${GRAPHENEOS[OTA_BASE_URL]}/${DEVICE_NAME}-${GRAPHENEOS[UPDATE_CHANNEL]}" | sed 's/ .*//')
+  fi
   # Annotated tags produce an extra `<tag>^{}` entry that must not become the version
   latest_magisk_version=$(
     git ls-remote --tags "${DOMAIN}/${MAGISK[REPOSITORY]}.git" |
