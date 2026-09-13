@@ -16,6 +16,28 @@ set -o nounset -o pipefail -o errexit
 
 build_flavor=$([[ "${ROOT:-false}" == "true" ]] && echo 'magisk' || echo 'rootless')
 
+server_ref=''
+for candidate_ref in gh-pages origin/gh-pages; do
+  if git rev-parse --verify --quiet "${candidate_ref}^{commit}" >/dev/null; then
+    server_ref="${candidate_ref}"
+    break
+  fi
+done
+
+if [[ -n "${server_ref}" ]]; then
+  published_location=$(
+    git show "${server_ref}:${build_flavor}/${DEVICE_NAME}.json" 2>/dev/null |
+      jq -r '.full.location_ota // empty' || true
+  )
+  published_version=$(sed -nE 's#^.*/releases/download/([0-9]+)/.*#\1#p' <<<"${published_location}")
+
+  if [[ "${published_version}" =~ ^[0-9]+$ && "${GRAPHENEOS_VERSION}" =~ ^[0-9]+$ ]] &&
+    ((10#${GRAPHENEOS_VERSION} < 10#${published_version})); then
+    echo -e "::error::Refusing to replace published GrapheneOS version ${published_version} with older version ${GRAPHENEOS_VERSION}."
+    exit 1
+  fi
+fi
+
 # Check if the tag exists
 if ! git show-ref --tags "${GRAPHENEOS_VERSION}" --quiet; then
   echo -e "Tag with GrapheneOS version ${GRAPHENEOS_VERSION} does not exist. Creating one..."
